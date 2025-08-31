@@ -1,0 +1,50 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv environment variables
+.env
+client/.env
+
+# Build output
+dist/
+build/
+client/dist/
+client/build/
+client/node_modules
+
+# Vite
+.vite/
+.vitepress/cache/
+
+# IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# MongoDB
+*.lock
+dump/
+
+# Miscellaneous
+*.swp
+*.bak
+*.tmp
+*.orig
