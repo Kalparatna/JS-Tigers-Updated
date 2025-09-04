@@ -32,8 +32,10 @@ const VendorForm = () => {
       setLoading(true)
       const response = await vendorAPI.getVendor(id)
       setFormData(response.data)
+      setError('')
     } catch (err) {
-      setError('Failed to fetch vendor details')
+      console.error('Error fetching vendor:', err)
+      setError(`Failed to fetch vendor details: ${err.response?.data?.error || err.message}`)
     } finally {
       setLoading(false)
     }
@@ -65,7 +67,8 @@ const VendorForm = () => {
         navigate('/')
       }, 1500)
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to save vendor')
+      console.error('Error saving vendor:', err)
+      setError(err.response?.data?.error || `Failed to ${isEdit ? 'update' : 'create'} vendor: ${err.message}`)
     } finally {
       setLoading(false)
     }

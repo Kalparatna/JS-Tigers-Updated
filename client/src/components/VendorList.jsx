@@ -1,46 +1,59 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { vendorAPI } from '../utils/api'
-import ConfirmDialog from './ConfirmDialog'
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { vendorAPI } from '../utils/api';
 
 const VendorList = () => {
-  const [vendors, setVendors] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  const [vendors, setVendors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetchVendors()
-  }, [currentPage])
+    fetchVendors();
+  }, [currentPage]);
 
   const fetchVendors = async () => {
     try {
-      setLoading(true)
-      const response = await vendorAPI.getVendors(currentPage, 10)
-      setVendors(response.data.vendors)
-      setTotalPages(response.data.totalPages)
-      setError('')
+      setLoading(true);
+      const response = await vendorAPI.getVendors(currentPage, 10);
+      console.log('API Response:', response.data); // Debugging log
+      
+      // Handle both old and new response formats
+      if (Array.isArray(response.data)) {
+        // Old format - direct array
+        setVendors(response.data);
+        setTotalPages(1);
+      } else {
+        // New format - object with vendors array
+        setVendors(response.data.vendors || []);
+        setTotalPages(response.data.totalPages || 1);
+      }
+      setError('');
     } catch (err) {
-      setError('Failed to fetch vendors')
+      console.error('Failed to fetch vendors:', err);
+      setError(`Failed to fetch vendors: ${err.response?.data?.error || err.message}`);
+      setVendors([]); // Ensure vendors is always an array
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleDelete = async (id, vendorName) => {
     if (window.confirm(`Are you sure you want to delete vendor "${vendorName}"?`)) {
       try {
-        await vendorAPI.deleteVendor(id)
-        fetchVendors() // Refresh the list
+        await vendorAPI.deleteVendor(id);
+        setError(''); // Clear any previous errors
+        fetchVendors(); // Refresh the list
       } catch (err) {
-        setError('Failed to delete vendor')
+        console.error('Error deleting vendor:', err);
+        setError(`Failed to delete vendor: ${err.response?.data?.error || err.message}`);
       }
     }
-  }
+  };
 
   if (loading) {
-    return <div className="loading">Loading vendors...</div>
+    return <div className="loading">Loading vendors...</div>;
   }
 
   return (
@@ -54,11 +67,7 @@ const VendorList = () => {
 
       {error && <div className="error">{error}</div>}
 
-      {vendors.length === 0 ? (
-        <div className="card">
-          <p>No vendors found. <Link to="/vendors/new">Add your first vendor</Link></p>
-        </div>
-      ) : (
+      {Array.isArray(vendors) && vendors.length > 0 ? (
         <>
           <table className="table">
             <thead>
@@ -115,9 +124,13 @@ const VendorList = () => {
             </div>
           )}
         </>
+      ) : (
+        <div className="card">
+          <p>No vendors found. <Link to="/vendors/new">Add your first vendor</Link></p>
+        </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default VendorList
+export default VendorList;
