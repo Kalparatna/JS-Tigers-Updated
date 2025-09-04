@@ -58,17 +58,17 @@ const Vendor = mongoose.model('Vendor', vendorSchema);
 
 // Routes
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Server is running' });
-});
+// app.get('/api/health', (req, res) => {
+//   res.status(200).json({ status: 'OK', message: 'Server is running' });
+// });
 
-app.get('/api', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Server is running' });
-});
+// app.get('/api', (req, res) => {
+//   res.status(200).json({ status: 'OK', message: 'Server is running' });
+// });
 
-app.get('/', (req, res) => {
-  res.send('Backend is running 🚀');
-})
+// app.get('/', (req, res) => {
+//   res.send('Backend is running 🚀');
+// })
 
 // 1. Get all vendors (with pagination)
 app.get('/api/vendors', async (req, res) => {
