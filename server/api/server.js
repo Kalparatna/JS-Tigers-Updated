@@ -9,18 +9,21 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://your-vercel-app.vercel.app',
+  'https://js-tigers-rouge.vercel.app',
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
+      console.log('Request Origin:', origin); // Debugging log
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error('Blocked by CORS:', origin); // Log blocked origins
         callback(new Error('Not allowed by CORS'));
       }
     },
+    optionsSuccessStatus: 200, // For legacy browsers that choke on 204
   })
 );
 app.use(express.json());
